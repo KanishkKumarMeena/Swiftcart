@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>SwiftCart</title>
+
+    <!-- Custom CSS -->
+    <style>
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Align input group to center */
+            width: 75%; /* Set total width to 150px */
+            margin: 0 auto;
+            border-radius: 0px;
+        }
+
+        .input-number {
+            width: 75px; /* Set width of quantity to 75px */
+            text-align: center; /* Center text */
+        }
+        .btn-plus {
+            width: 37.5px;
+            height: 38px;
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+        }
+        .btn-minus{
+            width: 37.5px;
+            height: 38px;
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+        .card {
+            margin: 10px;;
+            transition: transform 0.3s ease-in-out;
+            transform-origin: center bottom;
+        }
+      
+        .card:hover {
+            transform: scale(1.05); /* Scale up on hover */
+        }
+      
+        .description {
+            display: none; /* Hide description by default */
+            margin-top: 10px; /* Add margin */
+        }
+      
+        .card:hover .description {
+            display: block; /* Show description on hover */
+        }
+    </style>
+</head>
+<body style="background-image: url(../static/NewBackground.png);">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);" >
+    <div>
+      <img src="../static/MLogo.png" style="border-top-left-radius: 10px;height: 35px;width: 40px;border-bottom-left-radius: 10px;position: relative;" alt="">
+      <a class="navbar-brand" href="/home" style="background-color: white;width: 87px;height: 35px;color: black;align-content: center;position: fixed;">SwiftCart</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="btn btn-outline-dark btn-light" href="/home" style="margin-left: 88px;vertical-align: middle;height: 36.5px;border-radius: 0px;">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="btn btn-outline-dark btn-light" href="#" style="vertical-align: middle;height: 36.5px;border-radius: 0px;">Items <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+              <a class="btn btn-outline-dark btn-light " style="vertical-align: middle;height: 36.5px;border-radius: 0px;" href="/about">About</a>
+            </li>
+            <li class="nav-item active">
+                <a id="cart-link" class="btn btn-outline-dark btn-light" href="/cart" role="button" style="margin-right: 10px;border-top-left-radius: 0px;border-bottom-left-radius: 0px;height: 36px;">Cart</a>
+            </li>
+        </ul>
+        <img src="../static/Navbar.png" style="width: 280px;height: 40px;margin-left: 13%;margin-right: 25%;border-radius: 5px;" alt="">
+        <!-- Add a button for opening the cart page with a cart icon -->
+        <div class="col-md-12">
+            <button type="submit" form="cart-form" class="btn btn-outline-warning my-2 my-sm-0" style="width: 15%; margin-right: 15px;"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>        
+    </div>
+</nav>
+
+<!-- Display items below the navbar -->
+<div class="container mt-4">
+    <h2 style="margin-top: 75px;margin-left: -120px;margin-bottom: 25px;color: #4f8385;">Available Supplies :</h2>
+    <!-- <div class="row"> -->
+      <form method="POST" id="cart-form" action="{{ url_for('home') }}">
+        <div class="d-flex flex-wrap">
+        {% for item in items %}
+          <div class="card mx-2 mb-4" style="width: calc(33.333% - 20px);">
+            <img src="{{ url_for('static', filename=item.Image_Address) }}" class="card-img-top" alt="{{ item.Item_Name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.Item_Name }}</h5>
+              <p class="card-text">₹{{ item.Price }}</p>
+              <!-- Add a description element -->
+              <p class="card-text description">{{ item.I_Description }}</p>
+              <div class="form-group">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span style="margin-left: 25px;" >0</span>
+                  <input type="range" class="form-control-range" style="width: 175px;" id="quantity-{{ item.Item_ID }}" name="quantity" value="0" min="0" max="{{ item.Item_Quantity }}" onchange="updateQuantityDisplay(this)">
+                  <span style="margin-right: 25px;">{{ item.Item_Quantity }}</span>
+                </div>
+                <div style="margin-top: 10px;margin-bottom: -15px;margin-left: 60px;">
+                  <p style="display: inline; margin: 5px;">Selected Quantity : </p>
+                  <span id="quantity-display-{{ item.Item_ID }}">0</span>
+                </div>
+                <input type="hidden" name="item_id" value="{{ item.Item_ID }}">
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script>
+  function updateQuantityDisplay(input) {
+      var displayElement = document.getElementById('quantity-display-' + input.id.split('-')[1]);
+      var sliderValueElement = document.getElementById('slider-value-' + input.id.split('-')[1]);
+      displayElement.innerText = input.value;
+      sliderValueElement.innerText = input.value; // Update value at which the slider is
+  }
+</script>
+<script>
+$(document).ready(function() {
+    $('.btn-plus').on('click', function() {
+        var itemId = $(this).data('field');
+        var quantityInput = $('#quantity-' + itemId);
+        var quantity = parseInt(quantityInput.val());
+        var maxQuantity = parseInt(quantityInput.attr('max'));
+        if (!isNaN(quantity) && quantity < maxQuantity) {
+            quantityInput.val(quantity + 1);
+        }
+    });
+
+    $('.btn-minus').on('click', function() {
+        var itemId = $(this).data('field');
+        var quantityInput = $('#quantity-' + itemId);
+        var quantity = parseInt(quantityInput.val());
+        if (!isNaN(quantity) && quantity > 0) {
+            quantityInput.val(quantity - 1);
+        }
+    });
+});
+</script>
+</body>
+</html>

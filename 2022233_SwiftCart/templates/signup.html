@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="password"],
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body style="background-image: url(../static/NewBackground.png);">
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('ls') }}" role="button" style="width: 95px;margin-top: -25px;position: absolute;border: solid;padding-left: 50px;padding-top: 10px;height: 30px;border-radius: 10px;background-color: grey;margin-left: 25px;color: white;">Back</a>
+    <div class="container" style="border: solid; width: fit-content;border-radius: 25px;background-color: #1C4B2E;color: darkseagreen;box-shadow: 0px 0px 10px 7px #4770479c;">
+        <h2 style="margin-top: 0px;margin-bottom: 15px;color: #C2F0D1;">Signup</h2>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Signup Form -->
+        <form action="/signup" method="POST" onsubmit="return validateForm()" style="width: 550px;">
+            <!-- Other form fields -->
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required style="height: 30px;width: 550px;background-color: #E0F8E7;">
+            
+            <label for="middle_name">Middle Name (Optional):</label>
+            <input type="text" id="middle_name" name="middle_name" style="height: 30px;width: 550px;background-color: #E0F8E7;">
+            
+            <label for="last_name">Last Name (Optional):</label>
+            <input type="text" id="last_name" name="last_name" style="height: 30px;width: 550px;background-color: #E0F8E7;">
+            
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required style="height: 30px;width: 550px;background-color: #E0F8E7;">
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required style="height: 30px;width: 550px;background-color: #E0F8E7;">
+            
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" required style="height: 45px;width: 550px;background-color: #E0F8E7;"></textarea>
+            
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required style="height: 30px;width: 550px;background-color: #E0F8E7;">
+            
+            <button type="submit">Signup</button>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            var age = document.getElementById("age").value;
+            if (age < 18) {
+                alert("Age must be at least 18 years old.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
